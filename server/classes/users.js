@@ -49,9 +49,9 @@ module.exports = {
 }
 
 // Asi es el objeto que se va a tener por cada usuario
-{
-  id: '0sadasdjhga'
-  name: ' Cesar',
-  sala: 'Video juegos'
+// {
+//   id: '0sadasdjhga'
+//   name: ' Cesar',
+//   sala: 'Video juegos'
 // }
 // = es una asignacion, === es una comparacion
