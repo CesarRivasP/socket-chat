@@ -40,3 +40,8 @@ socket.on('createMessage', function(message){
 socket.on('listPersons', function(data){
   console.log('Personas: ', data);
 });
+
+// Mensajes privados
+socket.on('privateMessage', function(message){
+  console.log('Mensaje privado', message);
+})
