@@ -22,13 +22,21 @@ socket.on('disconnect', function(){
   console.log('Se perdio la conexion con el servidor');
 });
 
-socket.emit('sendMessage', {
-  user: 'Cesar',
-  message: 'Hello world'
-}, function(response){
-  console.log('Respuesta: ' + response);
-})
+// Enviar un mensaje desde un cliente a todos los demas usuarios
+// socket.emit('sendMessage', {
+//     user: 'Cesar',
+//     message: 'Hello world'
+//   },
+//   function(response){
+//     console.log('Respuesta: ' +  response);
+// });
 
-socket.on('sendMessage', function(data){
-  console.log(data);
+socket.on('createMessage', function(message){
+  console.log('Server: ', message);
+});
+
+// escuchar cambios en los usuarios
+// Cuando un usuario entra o sale del chat
+socket.on('listPersons', function(data){
+  console.log('Personas: ', data);
 });
