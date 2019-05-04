@@ -1,13 +1,16 @@
 var socket = io();
 var params = new URLSearchParams(window.location.search);
 
-if(!params.has('name')){
-  window.location = 'index.html'; //redireccion
-  throw new Error('El nombre es necesario');
+// if(!params.has('name')){
+// Hay que verificar si viene el nombre o la sala como parametro
+if(!params.has('name') || !params.has('room')){
+  window.location = 'index.html'; //redireccion si no viene ninguno de los dos parametros
+  throw new Error('El nombre y sala son necesarios');
 }
 
 var user = {
-  name: params.get('name')
+  name: params.get('name'),
+  room: params.get('room')
 };
 
 socket.on('connect', function(){
