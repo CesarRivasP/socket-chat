@@ -9,14 +9,19 @@ io.on('connection', (client) => {
   client.on('enterChat', function(data, callback){
     console.log(data);
 
-    if(!data.name){
+    // if(!data.name){
+    // Para validar que el usuario tenga la data
+    if(!data.name || !data.room){
       return callback({
         error: true,
-        message: 'EL nombre es necesario'
+        message: 'EL nombre/sala es necesario'
       });
     }
 
-    let persons = users.addPersons(client.id, data.name);
+    // Para conectar a un usuario con una sala. join es parte de la sintaxis para unir un usuario a una sala
+    client.join(data.room);
+
+    let persons = users.addPersons(client.id, data.name, data.room);
 
     client.broadcast.emit('listPersons',  users.getPersons());
 
@@ -50,7 +55,7 @@ io.on('connection', (client) => {
   // Mensaje privado
   client.on('privateMessage', (data) => {
     let person = users.getPerson(client.id);
-
+    // el id del usuario al que se le va a enviar el mensaje privado se tiene que llamar 'para'
     client.broadcast.to(data.para).emit('privateMessage', createMessage(person.name, data.message));
   })
 })
