@@ -31,6 +31,11 @@ class Users {
 
   getPersonsForRoom(room){
     // ....
+    let personsInRoom = this.persons.filter((person) => {
+      return person.room === room;
+    })
+
+    return personsInRoom;
   }
 
   // Para eliminar a alguien del array de personas
