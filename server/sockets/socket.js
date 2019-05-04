@@ -56,6 +56,7 @@ io.on('connection', (client) => {
     // AFTER v2
     // Cuando se desconecte un usuario Se le debe enviar una notificacion unicamente a los usuarios que se encuentren
     // en la sala donde se encontraba el usuario borrado
+    console.log(personDelete);
     client.broadcast.to(personDelete.room).emit('createMessage', createMessage('Admin', `${personDelete.name} abandono el chat`))
 
     client.broadcast.to(personDelete.room).emit('listPersons',  users.getPersonsForRoom(personDelete.room));
