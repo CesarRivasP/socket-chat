@@ -3,9 +3,13 @@
 var socket = io();
 
 var params = new URLSearchParams(window.location.search);
-
+var name = params.get('name');
+var room = params.get('room');
 // referencias de jquery
 var divUsuarios = $('#divUsuarios');  //Para obtener un id en jquery
+var sendForm = $('#sendForm');  //Para obtener un id en jquery
+var txtMessage = $('#txtMessage');
+var divChatbox = $('#divChatbox');
 
 
 // funciones para renderizar usuarios
@@ -29,9 +33,23 @@ function renderUsers(persons){ // [{},{}] -> se espera un array
 
   divUsuarios.html(html); //El html va a ser igual al html que se implemento aqui
 }
+
+
+function renderMessages(message){
+  var html = '';
+  html += '<li class="animated fadeIn">'
+  html += '  <div class="chat-img"><img src="assets/images/users/1.jpg" alt="user" /></div>';
+  html += '  <div class="chat-content">';
+  html += '    <h5>' + message.name + '</h5>';
+  html += '    <div class="box bg-light-info">' + message.message + '</div>';
+  html += '  </div>';
+  html += '  <div class="chat-time">10:56 am</div>';
+  html += '</li>';
+
+  divChatbox.append(html);
+}
+
 // Los atributos personalizados empiezan con la palabra data, por convencion. como data-id
-
-
 // Listeners
 divUsuarios.on('click', 'a', function(){
   var id = $(this).data('id')  //si fuera data-car se pondria data('car')
@@ -39,4 +57,24 @@ divUsuarios.on('click', 'a', function(){
   if(id){
     console.log(id);
   }
+})
+
+sendForm.on('submit', function(e){
+  e.preventDefault();
+  console.log(txtMessage.val());
+
+  if(txtMessage.val().trim().length === 0){ //trim quita los espacio al inicio y al final
+    return;
+  }
+
+  socket.emit('createMessage',
+  {
+    name: name,
+    message: txtMessage.val()
+  },
+   function(message){
+     // console.log(message);
+     txtMessage.val('').focus();
+     renderMessages(message)
+  })
 })
