@@ -29,7 +29,7 @@ io.on('connection', (client) => {
     callback(users.getPersonsForRoom(data.room)); //personas conectadas al chat
   })
 
-  client.on('createMessage', (data) => {
+  client.on('createMessage', (data, callback) => {
     let person = users.getPerson(client.id);
 
     // let message = createMessage(data.name, data.message);
@@ -38,6 +38,8 @@ io.on('connection', (client) => {
     // client.broadcast.to()emit('createMessage', message)
     // el broadcast se debe hacer unicamente a las personas que se encuentren en la misma sala
     client.broadcast.to(person.room).emit('createMessage', message); //como no se tiene el objeto sala, se usa persona
+
+    callback(message)
   })
 
   client.on('disconnect', () => {
@@ -57,6 +59,7 @@ io.on('connection', (client) => {
     // Cuando se desconecte un usuario Se le debe enviar una notificacion unicamente a los usuarios que se encuentren
     // en la sala donde se encontraba el usuario borrado
     console.log(personDelete);
+
     client.broadcast.to(personDelete.room).emit('createMessage', createMessage('Admin', `${personDelete.name} abandono el chat`))
 
     client.broadcast.to(personDelete.room).emit('listPersons',  users.getPersonsForRoom(personDelete.room));
