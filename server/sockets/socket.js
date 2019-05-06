@@ -1,8 +1,8 @@
 const { io } = require('../server');
 const { Users } = require('../classes/users');
-const users = new Users();
-
 const { createMessage } = require('../utils/utilities');
+
+const users = new Users();
 
 io.on('connection', (client) => {
 
@@ -25,6 +25,11 @@ io.on('connection', (client) => {
 
     // client.broadcast.emit('listPersons',  users.getPersons()); Solo se necesita enviar a los miembros de una sala
     client.broadcast.to(data.room).emit('listPersons',  users.getPersonsForRoom(data.room));
+
+    client.broadcast.to(data.room).emit(
+      'createMessage',
+      createMessage('Admin', `${data.name} se unio el chat`)
+    );
 
     callback(users.getPersonsForRoom(data.room)); //personas conectadas al chat
   })
@@ -60,7 +65,15 @@ io.on('connection', (client) => {
     // en la sala donde se encontraba el usuario borrado
     console.log(personDelete);
 
-    client.broadcast.to(personDelete.room).emit('createMessage', createMessage('Admin', `${personDelete.name} abandono el chat`))
+    if(personDelete === undefined){
+      return;
+    }
+    else {
+      client.broadcast.to(personDelete.room).emit(
+        'createMessage',
+        createMessage('Admin', `${personDelete.name} abandono el chat`)
+      )
+    }
 
     client.broadcast.to(personDelete.room).emit('listPersons',  users.getPersonsForRoom(personDelete.room));
   });
