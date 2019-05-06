@@ -35,19 +35,64 @@ function renderUsers(persons){ // [{},{}] -> se espera un array
 }
 
 
-function renderMessages(message){
+function renderMessages(message, me){ //me, significa si yo lo envio u otras personas klo envian
   var html = '';
-  html += '<li class="animated fadeIn">'
-  html += '  <div class="chat-img"><img src="assets/images/users/1.jpg" alt="user" /></div>';
-  html += '  <div class="chat-content">';
-  html += '    <h5>' + message.name + '</h5>';
-  html += '    <div class="box bg-light-info">' + message.message + '</div>';
-  html += '  </div>';
-  html += '  <div class="chat-time">10:56 am</div>';
-  html += '</li>';
+  var date = new Date(message.date);
+  var hour = date.getHours() + ':' + date.getMinutes();
+
+  var adminClass = 'info';
+
+  if(message.name === 'Admin'){
+    adminClass = 'danger';
+  }
+
+  if(me){
+    // Si soy yo el que envia el mensaje, se mostrara esto
+    html += '<li class="reverse">';
+    html += '  <div class="chat-content">';
+    html += '    <h5>' + message.name + '</h5>';
+    html += '    <div class="box bg-light-inverse">' + message.message + '</div>';
+    html += '  </div>';
+    html += '  <div class="chat-img"><img src="assets/images/users/5.jpg" alt="user" /></div>';
+    html += '  <div class="chat-time">' + hour + '</div>';
+    html += '</li>';
+  }
+  else {
+    // Si es otro el que envia el mensaje, se mostrara esto
+    html += '<li class="animated fadeIn">'
+    if(message.name !== 'Admin'){
+      html += '  <div class="chat-img"><img src="assets/images/users/1.jpg" alt="user" /></div>';
+    }
+
+    html += '  <div class="chat-content">';
+    html += '    <h5>' + message.name + '</h5>';
+    html += '    <div class="box bg-light-' + adminClass + '">' + message.message + '</div>';
+    html += '  </div>';
+    html += '  <div class="chat-time">' + hour + '</div>';
+    html += '</li>';
+  }
+
 
   divChatbox.append(html);
 }
+
+function scrollBottom() {
+
+    // selectors
+    var newMessage = divChatbox.children('li:last-child');
+
+    // heights
+    var clientHeight = divChatbox.prop('clientHeight');
+    var scrollTop = divChatbox.prop('scrollTop');
+    var scrollHeight = divChatbox.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight() || 0;
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        divChatbox.scrollTop(scrollHeight);
+    }
+}
+
 
 // Los atributos personalizados empiezan con la palabra data, por convencion. como data-id
 // Listeners
@@ -75,6 +120,9 @@ sendForm.on('submit', function(e){
    function(message){
      // console.log(message);
      txtMessage.val('').focus();
-     renderMessages(message)
+     // Aqui se indica true para indicar que cuando se envia el mensaje con el formulario, soy yo
+     renderMessages(message, true);
+     // Hay que llamar esta funcion aqui para que acomode la vista una vez se haya enviado el mensaje
+     scrollBottom();
   })
 })
