@@ -37,7 +37,9 @@ socket.on('disconnect', function(){
 
 socket.on('createMessage', function(message){
   console.log('Server: ', message);
-  renderMessages(message)
+  renderMessages(message, false);
+
+  scrollBottom();
 });
 
 // escuchar cambios en los usuarios
